@@ -80,4 +80,51 @@ internal class SafeMatrix<T>
 
         return stringBuilder.ToString();
     }
+
+    public IEnumerable<IEnumerable<T>> GetLeftRightDiagonalLines()
+    {
+        for (int row = 0; row < RowCount; row++)
+        {
+            yield return GetLeftRightLine(row, 0);
+        }
+
+        for (int column = 1; column < ColumnCount; column++)
+        {
+            yield return GetLeftRightLine(0, column);
+        }
+
+
+        IEnumerable<T> GetLeftRightLine(int row, int column)
+        {
+            int i = row;
+            int j = column;
+            for (; i < RowCount && j < ColumnCount; i++, j++)
+            {
+                yield return values[i][j];
+            }
+        }
+    }
+
+    public IEnumerable<IEnumerable<T>> GetRightLeftDiagonalLines()
+    {
+        for (int column = 0; column < ColumnCount; column++)
+        {
+            yield return GetRightLeftLine(0, column);
+        }
+
+        for (int row = 1; row < RowCount; row++)
+        {
+            yield return GetRightLeftLine(row, ColumnCount - 1);
+        }
+
+        IEnumerable<T> GetRightLeftLine(int row, int column)
+        {
+            int i = row;
+            int j = column;
+            for (; i < RowCount && j >= 0; i++, j--)
+            {
+                yield return values[i][j];
+            }
+        }
+    }
 }

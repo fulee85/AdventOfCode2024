@@ -1,0 +1,15 @@
+﻿C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\Day1\SolverTests.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\Day2\SolverTests.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\Day3\SolverTests.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\Day4\SolverTests.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\Day5\SolverTests.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\DayXX\SolverTests.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\ExtensionMethods\StringExtensionMethods.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\GlobalUsings.cs
+C:\Users\gfulep\source\repos\AdventOfCode2024\SolverTests\StringInput.cs
+C:\Users\gfulep\.nuget\packages\microsoft.net.test.sdk\17.11.1\build\netcoreapp3.1\Microsoft.NET.Test.Sdk.Program.cs
+C:\Users\gfulep\.nuget\packages\microsoft.testplatform.testhost\17.11.1\build\netcoreapp3.1\x64\testhost.exe
+C:\Users\gfulep\.nuget\packages\microsoft.testplatform.testhost\17.11.1\build\netcoreapp3.1\x64\testhost.dll
+C:\Users\gfulep\.nuget\packages\xunit.runner.visualstudio\2.8.2\build\net6.0\xunit.runner.visualstudio.testadapter.dll
+C:\Users\gfulep\.nuget\packages\xunit.runner.visualstudio\2.8.2\build\net6.0\xunit.runner.reporters.netcoreapp10.dll
+C:\Users\gfulep\.nuget\packages\xunit.runner.visualstudio\2.8.2\build\net6.0\xunit.runner.utility.netcoreapp10.dll

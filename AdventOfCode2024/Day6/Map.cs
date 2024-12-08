@@ -37,6 +37,13 @@ namespace AdventOfCode2024.Day6
 
         public int GetVisitedPositionsCount()
         {
+            HashSet<Position> visitedPositions = GetVisitedPositions();
+
+            return visitedPositions.Count;
+        }
+
+        private HashSet<Position> GetVisitedPositions()
+        {
             HashSet<Position> visitedPositions = new();
             Directions guardDirection = Directions.Up;
             Position guardPosition = guardStartPosition;
@@ -54,13 +61,14 @@ namespace AdventOfCode2024.Day6
                 guardPosition = guardPosition.GetPositionInDirection(guardDirection);
             }
 
-            return visitedPositions.Count;
+            return visitedPositions;
         }
 
         public int GetPossibleObstaclesCount()
         {
             int possibleObsticlesPositionCount = 0;
-            List<Position> emptyPositions = GetEmptyPositions();
+            List<Position> emptyPositions = GetVisitedPositions().ToList();
+            emptyPositions.Remove(guardStartPosition);
             foreach (var newObsticlePosition in emptyPositions)
             {
                 PositionWithDirection guardPosition = new PositionWithDirection(guardStartPosition.Row, guardStartPosition.Column, Directions.Up);

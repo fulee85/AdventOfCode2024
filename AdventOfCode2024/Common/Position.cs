@@ -1,4 +1,6 @@
 ﻿
+using System.Drawing;
+
 namespace AdventOfCode2024.Common;
 
 public record Position(int Row, int Column)
@@ -11,4 +13,8 @@ public record Position(int Row, int Column)
         Directions.Right => this with { Column = this.Column + 1 },
         _ => throw new NotImplementedException(),
     };
+
+    public static Position operator +(Position a, Position b) => new Position(a.Row + b.Row, a.Column + b.Column);
+    public static Position operator -(Position a, Position b) => new Position(a.Row - b.Row, a.Column - b.Column);
+    public static Position operator *(int c, Position b) => new Position(c * b.Row, c * b.Column);
 }

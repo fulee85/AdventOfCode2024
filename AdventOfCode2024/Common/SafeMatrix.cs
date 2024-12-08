@@ -34,6 +34,16 @@ internal class SafeMatrix<T>
 
     public T GetValue(Position position) => this[position.Row, position.Column];
 
+    public bool SetValue(Position position, T value)
+    {
+        if (position.Row < 0 || position.Row >= values.Count)
+            return false;
+        if (position.Column < 0 || position.Column >= values[position.Row].Count)
+            return false;
+        values[position.Row][position.Column] = value;
+        return true;
+    }
+
     public T this[int x, int y]
     {
         get
@@ -126,5 +136,23 @@ internal class SafeMatrix<T>
                 yield return values[i][j];
             }
         }
+    }
+
+    public long Count(T item)
+    {
+        long count = 0;
+
+        for (int i = 0; i < RowCount; i++)
+        {
+            for (int j = 0; j < ColumnCount; j++)
+            {
+                if (values[i][j]?.Equals(item) ?? false)
+                {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 }

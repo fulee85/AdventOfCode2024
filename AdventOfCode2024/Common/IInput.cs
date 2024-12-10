@@ -7,4 +7,9 @@ public interface IInput : IEnumerable<string>
     {
         return GetRawInput().Split(Environment.NewLine).Select(l => l.ToList()).ToList();
     }
+
+    List<List<int>> ToIntMatrix()
+    {
+        return GetRawInput().Split(Environment.NewLine).Select(l => l.Select(c => int.Parse(c.ToString())).ToList()).ToList();
+    }
 }

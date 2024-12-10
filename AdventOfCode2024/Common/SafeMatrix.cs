@@ -155,4 +155,18 @@ internal class SafeMatrix<T>
 
         return count;
     }
+
+    public IEnumerable<Position> FindPositions(T item)
+    {
+        for (int i = 0; i < RowCount; i++)
+        {
+            for (int j = 0; j < ColumnCount; j++)
+            {
+                if (values[i][j]?.Equals(item) ?? false)
+                {
+                    yield return new Position(i,j);
+                }
+            }
+        }
+    }
 }

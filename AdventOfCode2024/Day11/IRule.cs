@@ -8,6 +8,7 @@ namespace AdventOfCode2024.Day11;
 
 internal interface IRule
 {
-    void Apply(Stone stone);
     void SetNext(IRule next);
+
+    long Apply(long number, int count);
 }

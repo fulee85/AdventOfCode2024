@@ -4,29 +4,31 @@ namespace AdventOfCode2024.Day11;
 
 internal class RuleWhenHaveEvenDigits : RuleBase
 {
-    public override void Apply(Stone stone)
+    public override long Apply(long stoneNumber, int count)
     {
-        var stoneNumberAsString = stone.Number.ToString();
+        if (count == 0)
+        {
+            return 1;
+        }
+
+        if (keyValuePairs.TryGetValue((stoneNumber,count), out var sum))
+        {
+            return sum;
+        }
+
+        var stoneNumberAsString = stoneNumber.ToString();
         if (stoneNumberAsString.Length % 2 == 0)
         {
-            var firstHalf = stoneNumberAsString[..(stoneNumberAsString.Length / 2)];
-            var newStone = new Stone { Number = long.Parse(firstHalf), Previous = stone.Previous, Next = stone };
-            if (stone.Previous == null)
-            {
-                Stone.FirstStone = newStone;
-            }
-            else
-            {
-                stone.Previous.Next = newStone;
-            }
-
-            var secondHalf = stoneNumberAsString[(stoneNumberAsString.Length / 2)..];
-            stone.Number = long.Parse(secondHalf);
-            stone.Previous = newStone;
+            var firstHalf = long.Parse(stoneNumberAsString[..(stoneNumberAsString.Length / 2)]);
+            sum = FirstRule?.Apply(firstHalf, count - 1) ?? throw new Exception();
+            var secondHalf = long.Parse(stoneNumberAsString[(stoneNumberAsString.Length / 2)..]);
+            sum += FirstRule.Apply(secondHalf, count - 1);
+            keyValuePairs[(stoneNumber, count)] = sum;
+            return sum;
         }
         else
         {
-            base.Apply(stone);
+            return nextRule?.Apply(stoneNumber, count) ?? throw new Exception();
         }
     }
 }

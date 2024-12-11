@@ -2,15 +2,27 @@
 
 internal class RuleWhenZero : RuleBase
 {
-    public override void Apply(Stone stone)
+    public override long Apply(long stoneNumber, int count)
     {
-        if (stone.Number == 0)
+        if (count == 0)
         {
-            stone.Number = 1;
+            return 1;
+        }
+
+        if (keyValuePairs.TryGetValue((stoneNumber, count), out var sum))
+        {
+            return sum;
+        }
+
+        if (stoneNumber == 0)
+        {
+            sum = FirstRule?.Apply(1, count - 1) ?? throw new Exception();
+            keyValuePairs[(stoneNumber, count)] = sum;
+            return sum;
         }
         else
         {
-            base.Apply(stone);
+            return nextRule?.Apply(stoneNumber, count) ?? throw new Exception();
         }
     }
 }

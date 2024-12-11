@@ -1,45 +1,38 @@
 ﻿using AdventOfCode2024.Common;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AdventOfCode2024.Day11;
 
 public class PuzzleSolver : PuzzleSolverBase
 {
+    private IRule ruleOfChain;
+
     public PuzzleSolver(IInput input) : base(input)
     {
-    }
-
-    public override string GetFirstSolution()
-    {
-        Stone? previousStone = null;
-        foreach (var number in input.GetRawInput().Split().Select(long.Parse))
-        {
-            var newStone = new Stone { Number = number, Previous = previousStone };
-            if (previousStone != null)
-            {
-                previousStone.Next = newStone;
-            }
-            previousStone = newStone;
-        }
-
         RuleWhenZero ruleWhenZero = new();
         RuleWhenHaveEvenDigits ruleWhenHaveEvenDigits = new();
         RuleWhenNoneApply ruleWhenNoneApply = new();
 
-        IRule ruleOfChain = RuleBase.CreateRuleOfChain(ruleWhenZero, ruleWhenHaveEvenDigits, ruleWhenNoneApply);
-        for (int blinking = 0; blinking < 25; blinking++)
-        {
-            var actStone = Stone.FirstStone;
-            while (actStone != null)
-            {
-                ruleOfChain.Apply(actStone);
-                actStone = actStone.Next;
-            }
-        }
+        ruleOfChain = RuleBase.CreateRuleOfChain(ruleWhenZero, ruleWhenHaveEvenDigits, ruleWhenNoneApply);
+    }
 
-        return Stone.StonesCreated.ToString();
+    public override string GetFirstSolution()
+    {
+        return GetSolution(25);
     }
     public override string GetSecondSolution()
     {
-        return "";
+        return GetSolution(75);
+    }
+
+    private string GetSolution(int repeat)
+    {
+        var inputNumbers = input.GetRawInput().Split().Select(int.Parse);
+        long sum = 0;
+        foreach (var inputNumber in inputNumbers)
+        {
+            sum += ruleOfChain.Apply(inputNumber, repeat);
+        }
+        return sum.ToString();
     }
 }

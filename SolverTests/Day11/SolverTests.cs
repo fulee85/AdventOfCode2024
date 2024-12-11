@@ -25,7 +25,7 @@ public class SolverTests
     {
         //Arrange
         string input = @"125 17";
-        string expectedResult = "55312";
+        string expectedResult = "65601038650482";
         PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
 
         //Act

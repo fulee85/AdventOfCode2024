@@ -4,9 +4,8 @@ namespace AdventOfCode2024.Day11;
 
 internal abstract class RuleBase : IRule
 {
-    private IRule? nextRule;
-
-    public virtual void Apply(Stone stone) => nextRule?.Apply(stone);
+    protected IRule? nextRule;
+    public static IRule? FirstRule;
 
     public void SetNext(IRule next)
     {
@@ -19,7 +18,10 @@ internal abstract class RuleBase : IRule
         {
             rules[i].SetNext(rules[i + 1]);
         }
-
+        FirstRule = rules[0];
         return rules[0];
     }
+
+    protected readonly Dictionary<(long, int), long> keyValuePairs = [];
+    public abstract long Apply(long number, int count);
 }

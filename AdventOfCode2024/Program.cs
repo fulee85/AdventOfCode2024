@@ -2,8 +2,8 @@
 using System.Diagnostics;
 
 var day = DateTime.Now.Day;
-//Stopwatch stopwatch = new Stopwatch();
-//stopwatch.Start();
+Stopwatch stopwatch = new Stopwatch();
+stopwatch.Start();
 //for (int i = 1; i <= 25; i++)
 //{
     //var day = i;
@@ -17,5 +17,5 @@ var day = DateTime.Now.Day;
     Console.WriteLine($"First solution: {solver?.GetFirstSolution()}");
     Console.WriteLine($"Second solution: {solver?.GetSecondSolution()}");
 //}
-//stopwatch.Stop();
-//Console.WriteLine($"Elapsed time: {stopwatch.ElapsedMilliseconds} ms");
+stopwatch.Stop();
+Console.WriteLine($"Elapsed time: {stopwatch.ElapsedMilliseconds} ms");

@@ -24,6 +24,16 @@ internal class SafeMatrix<T>
         defaultFunc = () => defaultValue;
     }
 
+    public SafeMatrix(int rowCount, int columnCount, T defaultValue)
+    {
+        values = new List<List<T>>();
+        for (int row = 0; row < rowCount; row++)
+        {
+            values.Add(Enumerable.Repeat(defaultValue, columnCount).ToList());
+        }
+        defaultFunc = () => defaultValue;
+    }
+
     public IEnumerable<T> GetNeighbours(int row, int column)
     {
         yield return this[row + 1, column];

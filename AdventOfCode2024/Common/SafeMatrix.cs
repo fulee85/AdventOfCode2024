@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 namespace AdventOfCode2024.Common;
-internal class SafeMatrix<T>
+public class SafeMatrix<T>
 {
     private readonly List<List<T>> values;
     private readonly Func<T> defaultFunc;
@@ -93,7 +93,7 @@ internal class SafeMatrix<T>
         {
             for (int j = 0; j < ColumnCount; j++)
             {
-                stringBuilder.Append(values[i][j]?.ToString()?.PadLeft(4));
+                stringBuilder.Append(values[i][j]?.ToString()?.PadLeft(1));
             }
             stringBuilder.Append(Environment.NewLine);
         }

@@ -157,7 +157,6 @@ public class PuzzleSolver : PuzzleSolverBase
         distances.SetDistance(Directions.Right, startNode, 0);
         queue.Enqueue(Directions.Right, startNode);
         var visitedVertices = new HashSet<(Directions, Node)>();
-        var previousEdges = new PreviousEdges();
 
         while (queue.IsNotEmpty())
         {
@@ -168,13 +167,8 @@ public class PuzzleSolver : PuzzleSolverBase
             foreach (var edge in currentNode.Edges.Where(e => !visitedVertices.Contains((e.Value.ArrivingDirection,e.Value.ArrivingNode))))
             {
                 var distance = currentDistance + edge.Value.PointValue + (direction == edge.Key ? 0 : 1000);
-                if (distance == distances.GetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode))
+                if (distance < distances.GetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode))
                 {
-                    previousEdges.SetPreviousAsEqual(edge.Value.ArrivingNode, edge.Value);
-                }
-                else if (distance < distances.GetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode))
-                {
-                    previousEdges.SetPrevious(edge.Value.ArrivingDirection, edge.Value.ArrivingNode, edge.Value);
                     distances.SetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode, distance);
                 }
                 queue.Enqueue(edge.Value.ArrivingDirection, edge.Value.ArrivingNode);
@@ -182,25 +176,21 @@ public class PuzzleSolver : PuzzleSolverBase
         }
 
         HashSet<Edge> pathEdges = new HashSet<Edge>();
-        countedNodes = new HashSet<Node>();
-        pathEdges.UnionWith(AllPathEdges(endNode, previousEdges));
+        pathEdges.UnionWith(AllPathEdges(endNode, distances));
 
         return pathEdges.Sum(e => e.EffectiveLength).ToString();
     }
 
-    private HashSet<Node> countedNodes;
-    private IEnumerable<Edge> AllPathEdges(Node node, PreviousEdges previousEdges)
+    private IEnumerable<Edge> AllPathEdges(Node node, Distances distances)
     {
+        List<Edge> previousEdges = distances.GetPreviousEdges(node).ToList();
         HashSet<Edge> edges = new HashSet<Edge>();
-        countedNodes.Add(node);
-        foreach (var edge in previousEdges.GetEdges(node))
+        foreach (var edge in previousEdges)
         {
             edges.Add(edge);
-            if (!countedNodes.Contains(edge.DepartureNode))
-            {
-                edges.UnionWith(AllPathEdges(edge.DepartureNode, previousEdges));
-            }
+            edges.UnionWith(AllPathEdges(edge.ArrivingNode, distances));
         }
+
         return edges;
     }
 }

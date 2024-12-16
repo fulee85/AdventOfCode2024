@@ -14,7 +14,8 @@ public class Edge
 
     public override int GetHashCode() => ArrivingNode.GetHashCode() + DepartureNode.GetHashCode();
 
-    public override bool Equals(object? obj){
+    public override bool Equals(object? obj)
+    {
         if (obj is not null && obj is Edge otherEdge)
         {
             return otherEdge.DepartureNode == this.DepartureNode && otherEdge.ArrivingNode == this.ArrivingNode ||

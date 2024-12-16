@@ -30,6 +30,15 @@ public static class DirectionExtensions
         Directions.Left => Directions.Up,
         _ => throw new NotImplementedException()
     };
+
+    public static Directions GetInvertDirection(this Directions direction) => direction switch
+    {
+        Directions.Up => Directions.Down,
+        Directions.Down => Directions.Up,
+        Directions.Right => Directions.Left,
+        Directions.Left => Directions.Right,
+        _ => throw new NotImplementedException()
+    };
 }
 
 

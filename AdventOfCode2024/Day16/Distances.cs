@@ -16,16 +16,28 @@ public class Distances
     }
 
     public void SetDistance(Directions direction, Node node, int distance) => distances[(direction, node)] = distance;
-    public int GetDistance(Node endNode)
+    public int GetDistance(Node node)
     {
         var distance = int.MaxValue;
         foreach (var direction in DirectionExtensions.EnumerateDirections())
         {
-            if (distances.TryGetValue((direction,endNode), out var dist))
+            if (distances.TryGetValue((direction,node), out var dist))
             {
                 distance = Math.Min(dist, distance);
             }
         }
         return distance;
+    }
+
+    public IEnumerable<Edge> GetPreviousEdges(Node node)
+    {
+        var distance = GetDistance(node);
+        if (distance == 0)
+        {
+            return Enumerable.Empty<Edge>();
+        }
+        return distances
+            .Where(d => d.Value == distance && d.Key.Item2 == node)
+            .Select(x => node.Edges[x.Key.Item1.GetInvertDirection()]);
     }
 }

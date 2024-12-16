@@ -168,14 +168,22 @@ public class SafeMatrix<T>
 
     public IEnumerable<Position> FindPositions(T item)
     {
+        foreach (var position in EnumerateAllPositions())
+        {
+            if (GetValue(position)!.Equals(item))
+            {
+                yield return position;
+            }
+        }
+    }
+
+    public IEnumerable<Position> EnumerateAllPositions()
+    {
         for (int i = 0; i < RowCount; i++)
         {
             for (int j = 0; j < ColumnCount; j++)
             {
-                if (values[i][j]?.Equals(item) ?? false)
-                {
-                    yield return new Position(i,j);
-                }
+                yield return new Position(i, j);
             }
         }
     }

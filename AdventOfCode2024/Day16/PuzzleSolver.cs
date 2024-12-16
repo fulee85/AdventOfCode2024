@@ -99,6 +99,7 @@ public class PuzzleSolver : PuzzleSolverBase
 
     private Edge? CreateEdgeInDirection(Position position, Directions direction)
     {
+        var departureNode = nodes.GetValueOrDefault(position);
         var pointValue = 0;
         var effectiveLength = 0;
         while (true)
@@ -138,7 +139,7 @@ public class PuzzleSolver : PuzzleSolverBase
             if (nodes.TryGetValue(position, out var nextNode))
             {
                 nextNode.DistancesFromInDirections[direction] = int.MaxValue;
-                return new Edge { ArrivingDirection = direction, ArrivingNode = nextNode, PointValue = pointValue, EffectiveLength = effectiveLength };
+                return new Edge { ArrivingDirection = direction, ArrivingNode = nextNode, PointValue = pointValue, EffectiveLength = effectiveLength, DepartureNode = departureNode! };
             }
         }
     }
@@ -149,76 +150,57 @@ public class PuzzleSolver : PuzzleSolverBase
         CreateEdges();
         var startPosition = maze.FindPositions('S').First();
         var endPosition = maze.FindPositions('E').First();
-        var paths = new LinkedList<Path>();
+        var queue = new Queue();
+        var distances = new Distances();
         var startNode = nodes[startPosition];
         var endNode = nodes[endPosition];
-        startNode.DistancesFromInDirections[Directions.Right] = 0;
-        paths.AddFirst(new Path { Direction = Directions.Right, Node = startNode, VisitedNodes = [], Score = 0, Edges = [] });
+        distances.SetDistance(Directions.Right, startNode, 0);
+        queue.Enqueue(Directions.Right, startNode);
+        var visitedVertices = new HashSet<(Directions, Node)>();
+        var previousEdges = new PreviousEdges();
 
-        List<Path> shortestPaths = [];
-        while (paths.Count > 0)
+        while (queue.IsNotEmpty())
         {
-            var path = paths.GetMin(p => p.Score);
-            paths.Remove(path!);
-
-            if (path.Value.Node == endNode)
+            (var direction, var currentNode) = queue.GetMinimumVertice(distances);
+            queue.Remove((direction, currentNode));
+            visitedVertices.Add((direction,currentNode));
+            int currentDistance = distances.GetDistance(direction, currentNode);
+            foreach (var edge in currentNode.Edges.Where(e => !visitedVertices.Contains((e.Value.ArrivingDirection,e.Value.ArrivingNode))))
             {
-                while (path.Value.Node == endNode)
+                var distance = currentDistance + edge.Value.PointValue + (direction == edge.Key ? 0 : 1000);
+                if (distance == distances.GetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode))
                 {
-                    shortestPaths.Add(path.Value);
-                    path = paths.GetMin(p => p.Score);
-                    paths.Remove(path!);
+                    previousEdges.SetPreviousAsEqual(edge.Value.ArrivingNode, edge.Value);
                 }
-                break;
-            }
-
-            foreach (var edge in path!.Value.Node.Edges)
-            {
-                if (!path.Value.VisitedNodes.Contains(edge.Value.ArrivingNode))
+                else if (distance < distances.GetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode))
                 {
-                    var score = path.Value.Score + edge.Value.PointValue + (edge.Key == path.Value.Direction ? 0 : 1000);
-                    var oldPath = paths.Find(p => p.Direction == edge.Value.ArrivingDirection && p.Node == edge.Value.ArrivingNode);
-                    if (oldPath != null)
-                    {
-                        if (oldPath.Value.Score > score)
-                        {
-                            paths.Remove(oldPath);
-                            paths.AddLast(new Path()
-                            {
-                                Direction = edge.Value.ArrivingDirection,
-                                Node = edge.Value.ArrivingNode,
-                                VisitedNodes = new HashSet<Node>(path.Value.VisitedNodes) { path.Value.Node },
-                                Score = score,
-                                Edges = new List<Edge>(path.Value.Edges) { edge.Value }
-                            });
-                        }
-                        else if (oldPath.Value.Score == score)
-                        {
-                            paths.AddLast(new Path()
-                            {
-                                Direction = edge.Value.ArrivingDirection,
-                                Node = edge.Value.ArrivingNode,
-                                VisitedNodes = new HashSet<Node>(path.Value.VisitedNodes) { path.Value.Node },
-                                Score = score,
-                                Edges = new List<Edge>(path.Value.Edges) { edge.Value }
-                            });
-                        }
-                    }
-                    else
-                    {
-                        paths.AddLast(new Path()
-                        {
-                            Direction = edge.Value.ArrivingDirection,
-                            Node = edge.Value.ArrivingNode,
-                            VisitedNodes = new HashSet<Node>(path.Value.VisitedNodes) { path.Value.Node },
-                            Score = score,
-                            Edges = new List<Edge>(path.Value.Edges) { edge.Value }
-                        });
-                    }
+                    previousEdges.SetPrevious(edge.Value.ArrivingDirection, edge.Value.ArrivingNode, edge.Value);
+                    distances.SetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode, distance);
                 }
+                queue.Enqueue(edge.Value.ArrivingDirection, edge.Value.ArrivingNode);
             }
         }
 
-        return shortestPaths.SelectMany(s => s.Edges).ToHashSet().Sum(e => e.EffectiveLength).ToString();
+        HashSet<Edge> pathEdges = new HashSet<Edge>();
+        countedNodes = new HashSet<Node>();
+        pathEdges.UnionWith(AllPathEdges(endNode, previousEdges));
+
+        return pathEdges.Sum(e => e.EffectiveLength).ToString();
+    }
+
+    private HashSet<Node> countedNodes;
+    private IEnumerable<Edge> AllPathEdges(Node node, PreviousEdges previousEdges)
+    {
+        HashSet<Edge> edges = new HashSet<Edge>();
+        countedNodes.Add(node);
+        foreach (var edge in previousEdges.GetEdges(node))
+        {
+            edges.Add(edge);
+            if (!countedNodes.Contains(edge.DepartureNode))
+            {
+                edges.UnionWith(AllPathEdges(edge.DepartureNode, previousEdges));
+            }
+        }
+        return edges;
     }
 }

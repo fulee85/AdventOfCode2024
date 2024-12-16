@@ -10,5 +10,8 @@ public class Node
 
     public readonly Dictionary<Directions, int> DistancesFromInDirections = [];
 
+    public readonly List<Edge> previousEdges = [];
     public int Distance => DistancesFromInDirections.Count > 0 ? DistancesFromInDirections.Values.Min() : int.MaxValue;
+
+    public override string ToString() => Position.ToString();
 }

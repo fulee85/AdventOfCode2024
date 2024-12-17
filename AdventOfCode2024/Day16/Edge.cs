@@ -8,6 +8,7 @@ public class Edge
     public required Node DepartureNode { get; init; }
 
     public required Directions ArrivingDirection { get; init; }
+    public required Directions DepartureDirection { get; init; }
 
     public required int PointValue { get; init; }
     public required int EffectiveLength { get; init; }

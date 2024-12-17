@@ -68,7 +68,7 @@ public class PuzzleSolver : PuzzleSolverBase
         {
             return true;
         }
-        if (DirectionExtensions.EnumerateDirections().Count(d => maze.GetValue(position.GetPositionInDirection(d)) == '.') >= 3)
+        if (DirectionExtensions.EnumerateDirections().Count(d => maze.GetValue(position.GetPositionInDirection(d)) != '#') >= 3)
         {
             return true;
         }
@@ -82,16 +82,19 @@ public class PuzzleSolver : PuzzleSolverBase
         }
     }
 
+    private readonly List<Edge> edges = new List<Edge>();
+
     private void SetEdges(Node node)
     {
         foreach (var direction in DirectionExtensions.EnumerateDirections())
         {
-            if (maze.GetValue(node.Position.GetPositionInDirection(direction)) == '.')
+            if (maze.GetValue(node.Position.GetPositionInDirection(direction)) != '#')
             {
                 var edge = CreateEdgeInDirection(node.Position, direction);
                 if (edge != null)
                 {
                     node.Edges[direction] = edge;
+                    edges.Add(edge);
                 }
             }
         }
@@ -100,6 +103,7 @@ public class PuzzleSolver : PuzzleSolverBase
     private Edge? CreateEdgeInDirection(Position position, Directions direction)
     {
         var departureNode = nodes.GetValueOrDefault(position);
+        var departureDirection = direction;
         var pointValue = 0;
         var effectiveLength = 0;
         while (true)
@@ -139,7 +143,14 @@ public class PuzzleSolver : PuzzleSolverBase
             if (nodes.TryGetValue(position, out var nextNode))
             {
                 nextNode.DistancesFromInDirections[direction] = int.MaxValue;
-                return new Edge { ArrivingDirection = direction, ArrivingNode = nextNode, PointValue = pointValue, EffectiveLength = effectiveLength, DepartureNode = departureNode! };
+                return new Edge {
+                    ArrivingDirection = direction, 
+                    ArrivingNode = nextNode, 
+                    PointValue = pointValue, 
+                    EffectiveLength = effectiveLength - 1, 
+                    DepartureNode = departureNode!,
+                    DepartureDirection = departureDirection
+                };
             }
         }
     }
@@ -148,47 +159,103 @@ public class PuzzleSolver : PuzzleSolverBase
     {
         CreateNodes();
         CreateEdges();
-        var startPosition = maze.FindPositions('S').First();
-        var endPosition = maze.FindPositions('E').First();
+        CreateVertices();
+        CreateVertexEdges();
+
         var queue = new Queue();
-        var distances = new Distances();
-        var startNode = nodes[startPosition];
-        var endNode = nodes[endPosition];
-        distances.SetDistance(Directions.Right, startNode, 0);
-        queue.Enqueue(Directions.Right, startNode);
-        var visitedVertices = new HashSet<(Directions, Node)>();
+        vertices.ForEach(queue.Enqueue);
+        var visitedVertices = new HashSet<Vertex>();
 
         while (queue.IsNotEmpty())
         {
-            (var direction, var currentNode) = queue.GetMinimumVertice(distances);
-            queue.Remove((direction, currentNode));
-            visitedVertices.Add((direction,currentNode));
-            int currentDistance = distances.GetDistance(direction, currentNode);
-            foreach (var edge in currentNode.Edges.Where(e => !visitedVertices.Contains((e.Value.ArrivingDirection,e.Value.ArrivingNode))))
+            var minVertex = queue.GetMinimumVertex();
+            queue.Remove(minVertex);
+            visitedVertices.Add(minVertex);
+            int currentDistance = minVertex.Distance;
+            if (currentDistance == int.MaxValue)
             {
-                var distance = currentDistance + edge.Value.PointValue + (direction == edge.Key ? 0 : 1000);
-                if (distance < distances.GetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode))
+                break;
+            }
+            foreach (var edge in minVertex.OutEdges.Where(e => !visitedVertices.Contains(e.Value.To)))
+            {
+                var distance = currentDistance + edge.Value.PointValue + (minVertex.InDirection == edge.Key ? 0 : 1000);
+                if (distance == edge.Value.To.Distance)
                 {
-                    distances.SetDistance(edge.Value.ArrivingDirection, edge.Value.ArrivingNode, distance);
+                    edge.Value.To.PreviousEdges.Add(edge.Value);
+                    edge.Value.To.Distance = distance;
                 }
-                queue.Enqueue(edge.Value.ArrivingDirection, edge.Value.ArrivingNode);
+                else if (distance < edge.Value.To.Distance)
+                {
+                    edge.Value.To.PreviousEdges = new List<VertexEdge> { edge.Value };
+                    edge.Value.To.Distance = distance;
+                }
             }
         }
 
-        HashSet<Edge> pathEdges = new HashSet<Edge>();
-        pathEdges.UnionWith(AllPathEdges(endNode, distances));
-
-        return pathEdges.Sum(e => e.EffectiveLength).ToString();
+        var endPosition = maze.FindPositions('E').First();
+        var endNode = nodes[endPosition];
+        var endVertices = vertices.Where(v => v.Node == endNode).ToList();
+        var minDist = endVertices.Min(v => v.Distance);
+        var minEndVertices = endVertices.Where(v => v.Distance == minDist).ToList();
+        HashSet<VertexEdge> pathEdges = new HashSet<VertexEdge>();
+        foreach (var minEndVertex in minEndVertices)
+        {
+            pathEdges.UnionWith(AllPathEdges(minEndVertex));
+        }
+        HashSet<Node> pathNodes = pathEdges.Select(p => p.From.Node).ToHashSet();
+        pathNodes.UnionWith(pathEdges.Select(p => p.To.Node));
+        pathNodes.ToList().ForEach(Console.WriteLine);
+        return (pathEdges.Sum(e => e.EffectiveLength) + pathNodes.Count).ToString();
     }
 
-    private IEnumerable<Edge> AllPathEdges(Node node, Distances distances)
+    private void CreateVertexEdges()
     {
-        List<Edge> previousEdges = distances.GetPreviousEdges(node).ToList();
-        HashSet<Edge> edges = new HashSet<Edge>();
+        foreach (var edge in edges)
+        {
+            var endVertex = vertices.Find(v => v.InDirection == edge.ArrivingDirection && v.Node == edge.ArrivingNode);
+            foreach (var fromVertex in vertices.FindAll(v => v.Node == edge.DepartureNode && v.InDirection != edge.DepartureDirection.GetInvertDirection()))
+            {
+                var vertexEdge = new VertexEdge {
+                    From = fromVertex,
+                    To = endVertex!,
+                    EffectiveLength = edge.EffectiveLength,
+                    PointValue = edge.PointValue,
+                };
+                endVertex!.InEdges.Add(vertexEdge);
+                fromVertex.OutEdges[edge.DepartureDirection] = vertexEdge;
+            }
+        }
+    }
+
+    private readonly List<Vertex> vertices = new List<Vertex>();
+    private Vertex firstVertex;
+    private void CreateVertices()
+    {
+        foreach (var node in nodes)
+        {
+            foreach (var edge in node.Value.Edges)
+            {
+                vertices.Add(new Vertex
+                {
+                    InDirection = edge.Key.GetInvertDirection(),
+                    Node = node.Value,
+                });
+            }
+        }
+        var startPosition = maze.FindPositions('S').First();
+        var startNode = nodes[startPosition];
+        firstVertex = new Vertex { InDirection = Directions.Right, Distance = 0, Node = startNode };
+        vertices.Add(firstVertex);
+    }
+
+    private IEnumerable<VertexEdge> AllPathEdges(Vertex vertex)
+    {
+        List<VertexEdge> previousEdges = vertex.PreviousEdges;
+        HashSet<VertexEdge> edges = new HashSet<VertexEdge>();
         foreach (var edge in previousEdges)
         {
             edges.Add(edge);
-            edges.UnionWith(AllPathEdges(edge.ArrivingNode, distances));
+            edges.UnionWith(AllPathEdges(edge.From));
         }
 
         return edges;

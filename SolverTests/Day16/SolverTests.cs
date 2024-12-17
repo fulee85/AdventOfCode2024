@@ -126,4 +126,87 @@ public class SolverTests
         //Assert
         solution.Should().Be(expectedResult);
     }
+
+    [Fact]
+    public void SecondSolutionShouldGiveCorrectResultOnDemoInput3()
+    {
+        //Arrange
+        string input =
+@"###
+#E#
+#.#
+#.#
+#S#
+###";
+        string expectedResult = "4";
+        PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
+
+        //Act
+        var solution = puzzleSolver.GetSecondSolution();
+
+        //Assert
+        solution.Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void SecondSolutionShouldGiveCorrectResultOnDemoInput4()
+    {
+        //Arrange
+        string input =
+@"######
+#...E#
+#.####
+#.####
+#S####
+######";
+        string expectedResult = "7";
+        PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
+
+        //Act
+        var solution = puzzleSolver.GetSecondSolution();
+
+        //Assert
+        solution.Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void SecondSolutionShouldGiveCorrectResultOnDemoInput5()
+    {
+        //Arrange
+        string input =
+@"######
+#...E#
+#.##.#
+#.##.#
+#S...#
+######";
+        string expectedResult = "7";
+        PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
+
+        //Act
+        var solution = puzzleSolver.GetSecondSolution();
+
+        //Assert
+        solution.Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void SecondSolutionShouldGiveCorrectResultOnDemoInput6()
+    {
+        //Arrange
+        string input =
+@"#######
+##...E#
+##.#.##
+#S...##
+#######";
+        string expectedResult = "10";
+        PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
+
+        //Act
+        var solution = puzzleSolver.GetSecondSolution();
+
+        //Assert
+        solution.Should().Be(expectedResult);
+    }
 }

@@ -4,29 +4,15 @@ namespace AdventOfCode2024.Day16;
 
 public class Queue
 {
-    private readonly HashSet<(Directions, Node)> values = new();
-    public void Enqueue(Directions direction, Node node) => values.Add((direction, node));
+    private readonly HashSet<Vertex> values = new();
+    public void Enqueue(Vertex vertex) => values.Add(vertex);
 
-    public (Directions, Node) GetMinimumVertice(Distances distances)
+    public Vertex GetMinimumVertex()
     {
-        Directions minDirection = Directions.Down;
-        Node minNode = null!;
-        var minDist = int.MaxValue;
-        foreach (var value in values)
-        {
-            var dist = distances.GetDistance(value.Item1, value.Item2);
-            if (dist < minDist)
-            {
-                minDirection = value.Item1;
-                minNode = value.Item2;
-                minDist = dist;
-            }
-        }
-
-        return (minDirection, minNode);
+        return values.MinBy(v => v.Distance)!;
     }
 
     public bool IsNotEmpty() => values.Count > 0;
-    public void Remove((Directions direction, Node currentNode) value) =>
+    public void Remove(Vertex value) =>
         values.Remove(value);
 }

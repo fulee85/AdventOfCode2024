@@ -9,7 +9,6 @@ namespace AdventOfCode2024.Day17;
 
 public class IntervalFinder
 {
-    private readonly int index;
     private readonly int repetitionLength;
     private readonly List<int> valueOccurrencesInRepetition;
     private readonly BigInteger firstIntervalStart;
@@ -17,20 +16,25 @@ public class IntervalFinder
 
     public IntervalFinder(int index, int value, List<int>[] repetitionDictionary, int repetitionLength)
     {
-        if (value > 7) throw new Exception();
-        this.index = index;
         this.repetitionLength = repetitionLength;
         valueOccurrencesInRepetition = repetitionDictionary[value];
         firstIntervalStart = BigInteger.Pow(8, index);
         intervalsLength = firstIntervalStart;
     }
 
+    private ClosedIntervall? previousIntervall;
+
     public ClosedIntervall GetClosestInterval(BigInteger bigInteger)
     {
+        if (previousIntervall != null && previousIntervall.Contains(bigInteger))
+        {
+            return previousIntervall;
+        }
+
         if (bigInteger < firstIntervalStart)
         {
-            BigInteger intervalStart = valueOccurrencesInRepetition.First() * intervalsLength;
-            return new ClosedIntervall(intervalStart, intervalsLength);
+            BigInteger intervalStart = valueOccurrencesInRepetition[0] * intervalsLength;
+            previousIntervall = new ClosedIntervall(intervalStart, intervalsLength);
         }
         else
         {
@@ -43,15 +47,17 @@ public class IntervalFinder
                 if (indexes.Count == 0)
                 {
                     shift++;
-                    indexInRepetition = valueOccurrencesInRepetition.First();
+                    indexInRepetition = valueOccurrencesInRepetition[0];
                 }
                 else
                 {
-                    indexInRepetition = indexes.First();
+                    indexInRepetition = indexes[0];
                 }
             }
 
-            return new ClosedIntervall((indexInRepetition + (repetitionLength * shift)) * intervalsLength, intervalsLength);
+            previousIntervall = new ClosedIntervall((indexInRepetition + (repetitionLength * shift)) * intervalsLength, intervalsLength);
         }
+
+        return previousIntervall;
     }
 }

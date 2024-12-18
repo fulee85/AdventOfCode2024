@@ -89,4 +89,23 @@ Program: 0,1,5,4,3,0";
         var output = computer.RunProgram();
         output.Should().Be("0,3,5,4,3,0");
     }
+
+    [Fact]
+    public void SeconSolutionShouldGiveCorrectResultOnDemoInput()
+    {
+        //Arrange
+        string input = @"Register A: 28422061
+Register B: 0
+Register C: 0
+
+Program: 2,4,1,1,7,5,1,5,4,2,5,5,0,3,3,0";
+        string expectedResult = "164278496489149";
+        PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
+
+        //Act
+        var solution = puzzleSolver.GetSecondSolution();
+
+        //Assert
+        solution.Should().Be(expectedResult);
+    }
 }

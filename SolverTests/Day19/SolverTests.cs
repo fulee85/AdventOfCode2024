@@ -1,17 +1,27 @@
-﻿using AdventOfCode2024.DayXX;
+﻿using AdventOfCode2024.Day19;
 using FluentAssertions;
 
-namespace SolverTests.DayXX;
+namespace SolverTests.Day19;
 
 public class SolverTests
 {
-    private readonly string input = @"";
+    string input = @"r, wr, b, g, bwu, rb, gb, br
+
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb";
 
     [Fact]
     public void FirstSolutionShouldGiveCorrectResultOnDemoInput()
     {
         //Arrange
-        string expectedResult = "";
+        
+        string expectedResult = "6";
         PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
 
         //Act
@@ -25,7 +35,7 @@ public class SolverTests
     public void SecondSolutionShouldGiveCorrectResultOnDemoInput()
     {
         //Arrange
-        string expectedResult = "";
+        string expectedResult = "16";
         PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
 
         //Act

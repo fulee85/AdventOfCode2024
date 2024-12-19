@@ -26,6 +26,26 @@ public static class LinkedListExtensions
         return minNode;
     }
 
+    public static T GetAndRemoveMin<T>(this LinkedList<T> list, Func<T, int> selector)
+    {
+        int minValue = int.MaxValue;
+        var current = list.First;
+        LinkedListNode<T>? minNode = current;
+        while (current is not null)
+        {
+            if (selector(current.Value) <= minValue)
+            {
+                minNode = current;
+                minValue = selector(current.Value);
+            }
+            current = current.Next;
+        }
+
+        list.Remove(minNode!);
+
+        return minNode!.Value;
+    }
+
     public static LinkedListNode<T>? Find<T>(this LinkedList<T> list, Func<T, bool> predicate)
     {
         var current = list.First;

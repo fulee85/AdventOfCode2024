@@ -80,7 +80,7 @@ public class PuzzleSolver : PuzzleSolverBase
         {
             var nodeInPosition = grid.GetValue(position);
             nodeInPosition.Distance = int.MaxValue;
-            nodeInPosition.SetNeighbors(position.GetNeighbourPositions().Select(grid.GetValue));
+            nodeInPosition.SetNeighbors(position.GetNeighborPositions().Select(grid.GetValue));
         }
     }
 }

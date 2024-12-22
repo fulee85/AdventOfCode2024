@@ -2,7 +2,7 @@
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace AdventOfCode2024.Day21;
+namespace AdventOfCode2024.Day21Old;
 
 public class NumericPad : Pad
 {

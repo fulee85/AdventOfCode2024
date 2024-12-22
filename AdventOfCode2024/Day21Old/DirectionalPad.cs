@@ -1,7 +1,7 @@
 ﻿using AdventOfCode2024.Common;
 using System.Text;
 
-namespace AdventOfCode2024.Day21;
+namespace AdventOfCode2024.Day21Old;
 
 public class DirectionalPad : Pad
 {
@@ -71,21 +71,21 @@ public class DirectionalPad : Pad
     }
 
     private readonly Dictionary<string, long> lenghtsCache = new Dictionary<string, long>();
-    public override long GetShortestPathLength(string input)
+    public override long GetShortestPathLength(string line)
     {
-        if (lenghtsCache.TryGetValue(input, out var result))
+        if (lenghtsCache.TryGetValue(line, out var result))
         {
             return result;
         }
 
         result = 0L;
-        var extendedInput = StartChar + input + StartChar;
+        var extendedInput = StartChar + line + StartChar;
         for (int i = 0; i < extendedInput.Length - 1; i++)
         {
             result += next.GetShortestPathLength(dictionary[extendedInput.Substring(i, 2)]);
         }
 
-        lenghtsCache[input] = result;
+        lenghtsCache[line] = result;
         return result;
     }
 }

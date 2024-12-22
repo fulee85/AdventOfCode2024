@@ -17,7 +17,7 @@ public record Position(int Row, int Column)
     public static Position operator -(Position a, Position b) => new Position(a.Row - b.Row, a.Column - b.Column);
     public static Position operator *(int c, Position b) => new Position(c * b.Row, c * b.Column);
 
-    internal IEnumerable<Position> GetNeighborPositions()
+    public IEnumerable<Position> GetNeighborPositions()
     {
         yield return this with { Row = this.Row - 1 };
         yield return this with { Row = this.Row + 1 };

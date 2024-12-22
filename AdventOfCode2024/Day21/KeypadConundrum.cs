@@ -1,27 +1,22 @@
-﻿using System.Numerics;
+﻿using AdventOfCode2024.Day21Old;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AdventOfCode2024.Day21;
-
 public class KeypadConundrum
 {
-    private MostOuterPad outerPad;
-    private NumericPad numericPad;
+    private readonly Keypad keypad;
 
-    public KeypadConundrum()
+    public KeypadConundrum(Keypad keypad)
     {
-        outerPad = new MostOuterPad();
-        numericPad = new NumericPad(outerPad);
-    }
-
-    public string GetShortestSequence(string line)
-    {
-        return numericPad.GetShortestPath(line, true);
+        this.keypad = keypad;
     }
 
     public long GetShortestSequenceLength(string line)
     {
-        return numericPad.GetShortestPathLength(line);
+        return keypad.GetShortestPathLength(line);
     }
-
-    internal void AddExtraRobot() => numericPad.AddNewNextPad();
 }

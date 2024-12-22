@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdventOfCode2024.Day21;
+namespace AdventOfCode2024.Day21Old;
 
 public abstract class Pad
 {

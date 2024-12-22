@@ -1,6 +1,6 @@
 ﻿using AdventOfCode2024.Common;
 
-namespace AdventOfCode2024.Day21.Test;
+namespace AdventOfCode2024.Day21Old.Test;
 
 public class RobotWithNumericKeypad : IRobot
 {

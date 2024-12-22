@@ -1,40 +1,29 @@
 ﻿using AdventOfCode2024.Common;
-using AdventOfCode2024.Day21.Test;
 using System.Numerics;
 
 namespace AdventOfCode2024.Day21;
 
 public class PuzzleSolver : PuzzleSolverBase
 {
-    private KeypadConundrum keypadConundrum;
 
     public PuzzleSolver(IInput input) : base(input)
     {
-        keypadConundrum = new KeypadConundrum();
     }
 
     public override string GetFirstSolution()
     {
-        List<BigInteger> lengths = new();
-        for (int i = 0; i < 2; i++)
-        {
-            lengths.Add(GetSum());
-            keypadConundrum.AddExtraRobot();
-        }
-        return GetSum().ToString();
+        KeypadConundrumFactory keypadConundrumFactory = CreateKeypadConundrumFactory();
+        var keypadConundrum = keypadConundrumFactory.Create(2);
+        return GetSum(keypadConundrum).ToString();
     }
     public override string GetSecondSolution()
     {
-        List<BigInteger> lengths = new();
-        for (int i = 0; i < 25; i++)
-        {
-            lengths.Add(GetSum());
-            keypadConundrum.AddExtraRobot();
-        }
-        return GetSum().ToString();
+        KeypadConundrumFactory keypadConundrumFactory = CreateKeypadConundrumFactory();
+        var keypadConundrum = keypadConundrumFactory.Create(25);
+        return GetSum(keypadConundrum).ToString();
     }
 
-    private BigInteger GetSum()
+    private BigInteger GetSum(KeypadConundrum keypadConundrum)
     {
         BigInteger sum = 0L;
         foreach (var line in input)
@@ -45,5 +34,12 @@ public class PuzzleSolver : PuzzleSolverBase
         }
 
         return sum;
+    }
+
+    private KeypadConundrumFactory CreateKeypadConundrumFactory()
+    {
+        NumericKeypadFactory numericKeypadFactory = new NumericKeypadFactory(DijkstraAlgorithm.CreatePathsDictionary(KeypadConfigurations.NumericKeypad));
+        DirectionalKeypadFactory directionalKeypadFactory = new DirectionalKeypadFactory(DijkstraAlgorithm.CreatePathsDictionary(KeypadConfigurations.DirectionalKeypad));
+        return new KeypadConundrumFactory(directionalKeypadFactory, numericKeypadFactory);
     }
 }

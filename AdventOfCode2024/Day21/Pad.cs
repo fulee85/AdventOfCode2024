@@ -16,6 +16,7 @@ public abstract class Pad
     protected List<char> chars;
     protected Dictionary<char, char[]> edges;
     protected Dictionary<(char, char), char> edgesMap;
+    protected readonly Dictionary<string, List<string>> allPaths = new();
 
     protected Pad()
     {
@@ -58,11 +59,12 @@ public abstract class Pad
                 }
             }
 
-            Dictionary<char, List<string>> shortestPathsTo = new Dictionary<char, List<string>>();
             foreach (var endChar in chars.Where(ch => ch != startChar))
             {
+                var fromToKey = string.Concat(startChar, endChar);
                 List<string> shortestPaths = CalculatePathStrings(endChar, previous).ToList();
-                dictionary[string.Concat(startChar, endChar)] = GetBestShortestPath(shortestPaths);
+                allPaths[fromToKey] = shortestPaths;
+                dictionary[fromToKey] = GetBestShortestPath(shortestPaths);
             }
         }
     }
@@ -85,7 +87,7 @@ public abstract class Pad
         }
     }
 
-    private string GetBestShortestPath(List<string> shortestPaths)
+    protected string GetBestShortestPath(List<string> shortestPaths)
     {
         return shortestPaths.Select(TranslateToMoves).MinBy(p => next.GetShortestPath(p, withCache: false).Length)!;
     }

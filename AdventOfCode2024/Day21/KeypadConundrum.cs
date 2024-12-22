@@ -5,16 +5,12 @@ namespace AdventOfCode2024.Day21;
 public class KeypadConundrum
 {
     private MostOuterPad outerPad;
-    private DirectionalPad directionalPad1;
-    private DirectionalPad directionalPad2;
     private NumericPad numericPad;
 
     public KeypadConundrum()
     {
         outerPad = new MostOuterPad();
-        directionalPad1 = new DirectionalPad(outerPad);
-        directionalPad2 = new DirectionalPad(directionalPad1);
-        numericPad = new NumericPad(directionalPad2);
+        numericPad = new NumericPad(outerPad);
     }
 
     public string GetShortestSequence(string line)

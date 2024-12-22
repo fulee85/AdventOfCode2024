@@ -70,6 +70,20 @@ public class NumericPad : Pad
     {
         var newPad = new DirectionalPad(this.next);
         next = newPad;
+        RecalculateShortestPaths();
+    }
+
+    private void RecalculateShortestPaths()
+    {
+        foreach (var startChar in chars)
+        {
+            foreach (var endChar in chars.Where(ch => ch != startChar))
+            {
+                var fromToKey = string.Concat(startChar, endChar);
+                List<string> shortestPaths = allPaths[fromToKey];
+                dictionary[fromToKey] = GetBestShortestPath(shortestPaths);
+            }
+        }
     }
 
     public override string GetShortestPath(string input, bool withCache = true)

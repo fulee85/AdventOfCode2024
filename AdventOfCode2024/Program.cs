@@ -1,7 +1,7 @@
 ﻿using AdventOfCode2024.Common;
 using System.Diagnostics;
 
-var day = DateTime.Now.Day;
+var day = DateTime.Now.Day - 1;
 Stopwatch stopwatch = new Stopwatch();
 stopwatch.Start();
 //for (int i = 1; i <= 25; i++)

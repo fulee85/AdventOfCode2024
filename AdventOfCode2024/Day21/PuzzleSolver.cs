@@ -15,19 +15,23 @@ public class PuzzleSolver : PuzzleSolverBase
 
     public override string GetFirstSolution()
     {
-        return GetSum().ToString(); 
-
+        List<BigInteger> lengths = new();
+        for (int i = 0; i < 2; i++)
+        {
+            lengths.Add(GetSum());
+            keypadConundrum.AddExtraRobot();
+        }
+        return GetSum().ToString();
     }
     public override string GetSecondSolution()
     {
-        //List<BigInteger> lengths = new();
-        //for (int i = 0; i < 23; i++)
-        //{
-        //    lengths.Add(GetSum());
-        //    keypadConundrum.AddExtraRobot();
-        //}
-        //return GetSum().ToString();
-        return "";
+        List<BigInteger> lengths = new();
+        for (int i = 0; i < 25; i++)
+        {
+            lengths.Add(GetSum());
+            keypadConundrum.AddExtraRobot();
+        }
+        return GetSum().ToString();
     }
 
     private BigInteger GetSum()

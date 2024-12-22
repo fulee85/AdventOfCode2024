@@ -7,8 +7,6 @@ public class KeypadConundrum
     private MostOuterPad outerPad;
     private DirectionalPad directionalPad1;
     private DirectionalPad directionalPad2;
-    private DirectionalPad directionalPad3;
-    private DirectionalPad directionalPad4;
     private NumericPad numericPad;
 
     public KeypadConundrum()
@@ -16,9 +14,7 @@ public class KeypadConundrum
         outerPad = new MostOuterPad();
         directionalPad1 = new DirectionalPad(outerPad);
         directionalPad2 = new DirectionalPad(directionalPad1);
-        directionalPad3 = new DirectionalPad(directionalPad2);
-        directionalPad4 = new DirectionalPad(directionalPad3);
-        numericPad = new NumericPad(directionalPad4);
+        numericPad = new NumericPad(directionalPad2);
     }
 
     public string GetShortestSequence(string line)

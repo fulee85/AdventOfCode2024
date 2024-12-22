@@ -12,5 +12,6 @@ public class MostOuterPad : Pad
     {
     }
 
-    public override string GetShortestPath(string input) => input;
+    public override string GetShortestPath(string input, bool withCache) => input + 'p';
+    public override long GetShortestPathLength(string input) => input.Length + 1;
 }

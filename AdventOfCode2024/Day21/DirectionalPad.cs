@@ -1,4 +1,7 @@
-﻿namespace AdventOfCode2024.Day21;
+﻿using AdventOfCode2024.Common;
+using System.Text;
+
+namespace AdventOfCode2024.Day21;
 
 public class DirectionalPad : Pad
 {
@@ -32,27 +35,57 @@ public class DirectionalPad : Pad
     public DirectionalPad(Pad pad): base(pad)
     {
         StartChar = 'p';
-        if (staticDictionary is null)
-        {
-            base.chars = directionalPadChars;
-            base.edgesMap = directionalPadEdgesMap;
-            base.edges = directionalPadEdges;
-            PopulateDictionary();
-            dictionary["pp"] = "";
-            dictionary["uu"] = "";
-            dictionary["rr"] = "";
-            dictionary["dd"] = "";
-            dictionary["ll"] = "";
-            staticDictionary = dictionary;
-        }
-        else
-        {
-            dictionary = staticDictionary;
-        }
+        base.chars = directionalPadChars;
+        base.edgesMap = directionalPadEdgesMap;
+        base.edges = directionalPadEdges;
+        PopulateDictionary();
+        dictionary["pp"] = "";
+        dictionary["uu"] = "";
+        dictionary["rr"] = "";
+        dictionary["dd"] = "";
+        dictionary["ll"] = "";
     }
 
-    public void AddNewNextPad()
+    private readonly Dictionary<string, string> cache = new Dictionary<string, string>();
+
+    public override string GetShortestPath(string input, bool withCache = true)
     {
-        next = new DirectionalPad(this);
+        if (withCache && cache.TryGetValue(input, out var result))
+        {
+            return result;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        var extendedInput = StartChar + input + StartChar;
+        for (int i = 0; i < extendedInput.Length - 1; i++)
+        {
+            stringBuilder.Append(next.GetShortestPath(dictionary[extendedInput.Substring(i, 2)], withCache));
+        }
+        result = stringBuilder.ToString();
+
+        if (withCache)
+        {
+            cache[input] = result;
+        }
+        return result;
+    }
+
+    private readonly Dictionary<string, long> lenghtsCache = new Dictionary<string, long>();
+    public override long GetShortestPathLength(string input)
+    {
+        if (lenghtsCache.TryGetValue(input, out var result))
+        {
+            return result;
+        }
+
+        result = 0L;
+        var extendedInput = StartChar + input + StartChar;
+        for (int i = 0; i < extendedInput.Length - 1; i++)
+        {
+            result += next.GetShortestPathLength(dictionary[extendedInput.Substring(i, 2)]);
+        }
+
+        lenghtsCache[input] = result;
+        return result;
     }
 }

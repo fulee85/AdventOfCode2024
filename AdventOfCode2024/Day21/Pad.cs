@@ -26,20 +26,9 @@ public abstract class Pad
         this.next = next;
     }
 
+    public abstract string GetShortestPath(string input, bool withCache = true);
 
-    public virtual string GetShortestPath(string input)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        var extendedInput = StartChar + input;
-        for (int i = 0; i < extendedInput.Length - 1; i++)
-        {
-            stringBuilder.Append(dictionary[extendedInput.Substring(i, 2)]);
-            stringBuilder.Append('p');
-        }
-
-        var path = next.GetShortestPath(stringBuilder.ToString());
-        return path;
-    }
+    public abstract long GetShortestPathLength(string line);
 
     protected void PopulateDictionary()
     {
@@ -98,7 +87,7 @@ public abstract class Pad
 
     private string GetBestShortestPath(List<string> shortestPaths)
     {
-        return shortestPaths.Select(TranslateToMoves).MinBy(p => next.GetShortestPath(p + 'p').Length)!;
+        return shortestPaths.Select(TranslateToMoves).MinBy(p => next.GetShortestPath(p, withCache: false).Length)!;
     }
 
     private string TranslateToMoves(string path)

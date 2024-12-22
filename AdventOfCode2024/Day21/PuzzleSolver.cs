@@ -1,5 +1,6 @@
 ﻿using AdventOfCode2024.Common;
 using AdventOfCode2024.Day21.Test;
+using System.Numerics;
 
 namespace AdventOfCode2024.Day21;
 
@@ -14,22 +15,29 @@ public class PuzzleSolver : PuzzleSolverBase
 
     public override string GetFirstSolution()
     {
-        return GetSumWithExtraPads().ToString(); 
+        return GetSum().ToString(); 
 
     }
     public override string GetSecondSolution()
     {
-        return GetSumWithExtraPads().ToString();
+        //List<BigInteger> lengths = new();
+        //for (int i = 0; i < 23; i++)
+        //{
+        //    lengths.Add(GetSum());
+        //    keypadConundrum.AddExtraRobot();
+        //}
+        //return GetSum().ToString();
+        return "";
     }
 
-    private long GetSumWithExtraPads(int extraPadCount = 0)
+    private BigInteger GetSum()
     {
-        var sum = 0L;
+        BigInteger sum = 0L;
         foreach (var line in input)
         {
-            var numValue = int.Parse(line.TrimStart('0')[..^1]);
-            string shortestSequence = keypadConundrum.GetShortestSequence(line);
-            sum += numValue * shortestSequence.Length;
+            var numValue = BigInteger.Parse(line.TrimStart('0')[..^1]);
+            var shortestSequence = keypadConundrum.GetShortestSequenceLength(line);
+            sum += numValue * shortestSequence;
         }
 
         return sum;

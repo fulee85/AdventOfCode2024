@@ -65,4 +65,34 @@ public class NumericPad : Pad
         base.edges = numericPadEdges;
         PopulateDictionary();
     }
+
+    public void AddNewNextPad()
+    {
+        var newPad = new DirectionalPad(this.next);
+        next = newPad;
+    }
+
+    public override string GetShortestPath(string input, bool withCache = true)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        var extendedInput = StartChar + input;
+        for (int i = 0; i < extendedInput.Length - 1; i++)
+        {
+            stringBuilder.Append(next.GetShortestPath(dictionary[extendedInput.Substring(i, 2)], withCache));
+        }
+
+        return stringBuilder.ToString();
+    }
+
+    public override long GetShortestPathLength(string input) 
+    {
+        long length = 0;
+        var extendedInput = StartChar + input;
+        for (int i = 0; i < extendedInput.Length - 1; i++)
+        {
+            length += next.GetShortestPathLength(dictionary[extendedInput.Substring(i, 2)]);
+        }
+
+        return length;
+    } 
 }

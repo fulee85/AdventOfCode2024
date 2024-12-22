@@ -7,6 +7,8 @@ public class KeypadConundrum
     private MostOuterPad outerPad;
     private DirectionalPad directionalPad1;
     private DirectionalPad directionalPad2;
+    private DirectionalPad directionalPad3;
+    private DirectionalPad directionalPad4;
     private NumericPad numericPad;
 
     public KeypadConundrum()
@@ -14,15 +16,20 @@ public class KeypadConundrum
         outerPad = new MostOuterPad();
         directionalPad1 = new DirectionalPad(outerPad);
         directionalPad2 = new DirectionalPad(directionalPad1);
-        numericPad = new NumericPad(directionalPad2);
+        directionalPad3 = new DirectionalPad(directionalPad2);
+        directionalPad4 = new DirectionalPad(directionalPad3);
+        numericPad = new NumericPad(directionalPad4);
     }
 
-    public string GetShortestSequence(string line, int extraDirPads = 0)
+    public string GetShortestSequence(string line)
     {
-        for (int i = 0; i < extraDirPads; i++)
-        {
-            directionalPad1.AddNewNextPad();
-        }
-        return numericPad.GetShortestPath(line);
+        return numericPad.GetShortestPath(line, true);
     }
+
+    public long GetShortestSequenceLength(string line)
+    {
+        return numericPad.GetShortestPathLength(line);
+    }
+
+    internal void AddExtraRobot() => numericPad.AddNewNextPad();
 }

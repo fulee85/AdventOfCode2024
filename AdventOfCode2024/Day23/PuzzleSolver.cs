@@ -58,10 +58,25 @@ public class PuzzleSolver : PuzzleSolverBase
 
     public override string GetSecondSolution()
     {
-        Dictionary<string, HashSet<string>> LANGraph = CreateGraph();
-        HashSet<InterConnectedComputers> interconnectedComputers = new();
+        Node.LANGraph = CreateGraph();
+        var startNode = new Node([], Node.LANGraph.Keys.ToList());
+        HashSet<Node> visitedNodes = new HashSet<Node>();
+        Stack<Node> nodesStack = new();
+        nodesStack.Push(startNode);
 
+        while (nodesStack.Count > 0)
+        {
+            var node = nodesStack.Pop();
+            visitedNodes.Add(node);
+            foreach (var neighborNode in node.GetNeighborNodes())
+            {
+                if (!visitedNodes.Contains(neighborNode))
+                {
+                    nodesStack.Push(neighborNode);
+                }
+            }
+        }
 
-        return interconnectedComputers.MaxBy(ic => ic.Count)!.ComputersNames;
+        return visitedNodes.MaxBy(n => n.Depth)!.Label;
     }
 }

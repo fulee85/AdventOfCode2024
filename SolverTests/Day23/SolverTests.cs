@@ -56,7 +56,7 @@ td-yn";
     public void SecondSolutionShouldGiveCorrectResultOnDemoInput()
     {
         //Arrange
-        string expectedResult = "";
+        string expectedResult = "co,de,ka,ta";
         PuzzleSolver puzzleSolver = new PuzzleSolver(new StringInput(input));
 
         //Act

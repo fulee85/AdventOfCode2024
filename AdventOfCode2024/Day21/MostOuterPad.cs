@@ -5,5 +5,6 @@ public class MostOuterPad : Keypad
     {
     }
 
+    public override string GetShortestPath(string input) => input + 'p';
     public override long GetShortestPathLength(string input) => input.Length + 1;
 }

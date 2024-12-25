@@ -11,6 +11,43 @@ public class DirectionalKeypad : Keypad
     public DirectionalKeypad(Dictionary<string, List<string>> shortestPaths, Keypad? next = null) : base(shortestPaths, next)
     {
         StartChar = 'p';
+        shortestPaths["pp"] = [""];
+        shortestPaths["uu"] = [""];
+        shortestPaths["rr"] = [""];
+        shortestPaths["dd"] = [""];
+        shortestPaths["ll"] = [""];
+    }
+
+    private readonly Dictionary<string, string> stringCache = new();
+    public override string GetShortestPath(string input)
+    {
+        if (stringCache.TryGetValue(input, out var result))
+        {
+            return result;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        var extendedInput = StartChar + input + StartChar;
+        for (int i = 0; i < extendedInput.Length - 1; i++)
+        {
+            var minLength = int.MaxValue;
+            string minPathString = "";
+            foreach (var item in shortestPaths[extendedInput.Substring(i, 2)])
+            {
+                var actString = next.GetShortestPath(item);
+                if (actString.Length < minLength)
+                {
+                    minLength = actString.Length;
+                    minPathString = actString;
+                }
+            }
+            stringBuilder.Append(minPathString);
+        }
+        result = stringBuilder.ToString();
+
+       
+        stringCache[input] = result;
+        return result;
     }
 
     public override long GetShortestPathLength(string input)

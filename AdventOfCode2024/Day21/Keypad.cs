@@ -21,6 +21,8 @@ public abstract class Keypad
 
     public abstract long GetShortestPathLength(string input);
 
+    public abstract string GetShortestPath(string input);
+
     protected long GetMinLength(string substring)
     {
         if (dictionary.TryGetValue(substring, out var minLength))

@@ -64,10 +64,13 @@ public class DirectionalKeypad : Keypad
             var substring = extendedInput.Substring(i, 2);
             if (substring[0] == substring[1])
             {
-                continue;
+                length += 1;
+            }
+            else
+            {
+                length += GetMinLength(substring);
             }
 
-            length += GetMinLength(substring);
         }
 
         cache[input] = length;

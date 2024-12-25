@@ -29,10 +29,10 @@ public class PuzzleSolver : PuzzleSolverBase
         foreach (var line in input)
         {
             var numValue = BigInteger.Parse(line.TrimStart('0')[..^1]);
-            //var shortestSequence = keypadConundrum.GetShortestSequenceLength(line);
-            //sum += numValue * shortestSequence;
-            var shortestSequence = keypadConundrum.GetShortestSequence(line);
-            sum += numValue * shortestSequence.Length;
+            var shortestSequence = keypadConundrum.GetShortestSequenceLength(line);
+            sum += numValue * shortestSequence;
+            //var shortestSequence = keypadConundrum.GetShortestSequence(line);
+            //sum += numValue * shortestSequence.Length;
         }
 
         return sum;
